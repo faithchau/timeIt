@@ -1,17 +1,30 @@
 const functions = require('firebase-functions');
 const admin = require ('firebase-admin');
+
+var Stopwatch = require ('timer-stopwatch')
 admin.initializeApp(functions.config().firebase);
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
 
 
-exports.countDown = functions.database.ref('/time/{timeId}/{child}').onWrite(event =>{
 
-	//console.log("hey this works");
+exports.countDown = functions.database.ref('/times/{timeId}/time').onCreate(event =>{
+
+	console.log("hey this works");
+
+	//var seconds = functions.database.ref('/time/{timeId}/seconds').val();
+	//console.log('the seconds: '+seconds);
+	var time = event.data.val();
+
+	var timer = new Stopwatch(time);
+
+	timer.onDone(function(){
+		console.log('Timer is complete');
+	});
+
+	timer.start();
+
+	//TODO: need to send notif when timer goes off via FCM
+
+	//console.log ('the value is'+ event.data.val());
 
 	return event.data.ref.parent.child('test').set ('this works');
 
