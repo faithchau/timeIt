@@ -18,14 +18,15 @@ exports.countDown = functions.database.ref('/times/{timeId}/time').onCreate(even
 
 	timer.onDone(function(){
 		console.log('Timer is complete');
+
+		//TODO: send notif here
 	});
 
 	timer.start();
 
-	//TODO: need to send notif when timer goes off via FCM
 
 	//console.log ('the value is'+ event.data.val());
 
-	return event.data.ref.parent.child('test').set ('this works');
+	return event.data.ref.parent.child('state').set ('done');
 
 }); 

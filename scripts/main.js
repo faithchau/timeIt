@@ -6,19 +6,20 @@ TimeIt.prototype.saveTime = function(e){
 	e.preventDefault();
 }
 
-
 function TimeIt(){
-	this.initFirebase();
+	initFirebase();
 }
 
-TimeIt.prototype.initFirebase = function(){
+function initFirebase (){
+	this.auth = firebase.auth();
 	this.database = firebase.database();
-	//this.auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
+	this.auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
 }
 
 window.onload = function(){
 	window.timeIt = new TimeIt(); 
 }-**/
+
 
 function startIt(){
 	//console.log(document.getElementById("min").value+" "
@@ -41,16 +42,14 @@ function startIt(){
 		console.error("Error writing to FB", error);
 	});
 
-	saveMessagingDeviceToken();
-
-	};
+};
 
 //save device token to database
 function saveMessagingDeviceToken (){
 		firebase.messaging().getToken().then(function(currentToken){
 		if(currentToken){
 			console.log ('got FCM device token', currentToken);
-			firebase.database().ref('/fcmTokens').child(currentToken).set("hey this works");
+			firebase.database().ref('/fcmTokens').child(currentToken).set(firebase.auth().currentUser.uid);
 		}else{
 			requestNotificationsPermissions();
 		}
@@ -70,6 +69,39 @@ function requestNotificationsPermissions(){
 	});
 	
 };
+
+
+function signIn(){
+	console.log('user is signning in');
+
+	var provider = new firebase.auth.GoogleAuthProvider();
+	firebase.auth().signInWithPopup(provider).then(function(result){
+		document.getElementById("username").innerHTML = result.user.displayName; 
+		document.getElementById("username").removeAttribute('hidden');
+		document.getElementById("signOut").removeAttribute('hidden');
+		document.getElementById("signIn").setAttribute('hidden', true);
+
+		saveMessagingDeviceToken();
+		
+	}).catch (function(error){
+		console.error("user sign in unsuccessful", error);
+	}); 
+};
+
+function signOut (){
+	console.log('user is signning out');
+
+	firebase.auth().signOut().then(function(){
+		console.log('user signed out successful');
+		document.getElementById("username").setAttribute('hidden', true);
+		document.getElementById("signOut").setAttribute('hidden', true);
+		document.getElementById("signIn").removeAttribute('hidden');
+	}).catch(function(error){
+		console.error ("user sign out unsuccessful", error);
+	});
+};
+
+
 
 
 
