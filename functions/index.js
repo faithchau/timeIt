@@ -19,7 +19,19 @@ exports.countDown = functions.database.ref('/times/{timeId}/time').onCreate(even
 	timer.onDone(function(){
 		console.log('Timer is complete');
 
-		//TODO: send notif here
+		const payload = {
+			notification: {
+				title: 'your time is up', 
+				body: 'times up !'
+			}
+		}; 
+
+		admin.database().ref('fcmTokens').once('value').then(allTokens=>{
+			if (allTokens.val()){
+				const tokens = Object.keys(allTokens.val());
+				admin.messaging().sendToDevice(tokens,payload);
+			}
+		})
 	});
 
 	timer.start();
