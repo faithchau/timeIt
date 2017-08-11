@@ -6,9 +6,7 @@ TimeIt.prototype.saveTime = function(e){
 	e.preventDefault();
 }
 
-function TimeIt(){
-	initFirebase();
-}
+
 
 function initFirebase (){
 	this.auth = firebase.auth();
@@ -16,9 +14,12 @@ function initFirebase (){
 	this.auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
 }
 
-window.onload = function(){
-	window.timeIt = new TimeIt(); 
-}-**/
+-**/
+function TimeIt(){
+	//initFirebase();
+
+	var deviceToken; 
+}
 
 
 function startIt(){
@@ -35,21 +36,25 @@ function startIt(){
 	var time = (min * 60000) + (sec * 1000); 
 
 
+	var userName = firebase.auth().currentUser.displayName; 
+
 	//push to firebase database
 	firebase.database().ref('times').push({
-		time: time
+		time: time, 
+		fcmtoken: deviceToken,
+		user: userName || 'Hey there!'
 	}).catch(function(error){
 		console.error("Error writing to FB", error);
 	});
 
 };
 
-//save device token to database
 function saveMessagingDeviceToken (){
 		firebase.messaging().getToken().then(function(currentToken){
 		if(currentToken){
 			console.log ('got FCM device token', currentToken);
-			firebase.database().ref('/fcmTokens').child(currentToken).set(firebase.auth().currentUser.uid);
+			//firebase.database().ref('/fcmTokens').child(currentToken).set(firebase.auth().currentUser.uid);
+			this.deviceToken = currentToken;  
 		}else{
 			requestNotificationsPermissions();
 		}
@@ -101,6 +106,10 @@ function signOut (){
 	});
 };
 
+
+window.onload = function(){
+	window.timeIt = new TimeIt(); 
+}
 
 
 

@@ -6,32 +6,35 @@ admin.initializeApp(functions.config().firebase);
 
 
 
-exports.countDown = functions.database.ref('/times/{timeId}/time').onCreate(event =>{
+exports.countDown = functions.database.ref('/times/{timeId}').onCreate(event =>{
 
 	console.log("hey this works");
 
-	//var seconds = functions.database.ref('/time/{timeId}/seconds').val();
-	//console.log('the seconds: '+seconds);
-	var time = event.data.val();
+	const snapshot = event.data;
+
+	var time = snapshot.val().time;
+
+	//console.log(time);
+
+	var name = snapshot.val().user; 
+
+	var token = snapshot.val().fcmtoken; 
 
 	var timer = new Stopwatch(time);
-
+	
 	timer.onDone(function(){
 		console.log('Timer is complete');
 
 		const payload = {
 			notification: {
-				title: 'your time is up', 
+				title: name +', your time is up', 
 				body: 'times up !'
 			}
 		}; 
 
-		admin.database().ref('fcmTokens').once('value').then(allTokens=>{
-			if (allTokens.val()){
-				const tokens = Object.keys(allTokens.val());
-				admin.messaging().sendToDevice(tokens,payload);
-			}
-		})
+	admin.messaging().sendToDevice(token,payload);
+
+		
 	});
 
 	timer.start();
@@ -39,6 +42,6 @@ exports.countDown = functions.database.ref('/times/{timeId}/time').onCreate(even
 
 	//console.log ('the value is'+ event.data.val());
 
-	return event.data.ref.parent.child('state').set ('done');
+	return snapshot.ref.child('state').set ('done');
 
 }); 
