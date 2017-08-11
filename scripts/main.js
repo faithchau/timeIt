@@ -1,36 +1,25 @@
-
-
-/**
-
-TimeIt.prototype.saveTime = function(e){
-	e.preventDefault();
-}
-
-
-
-function initFirebase (){
-	this.auth = firebase.auth();
-	this.database = firebase.database();
-	this.auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
-}
-
--**/
 function TimeIt(){
-	//initFirebase();
-
 	var deviceToken; 
+
+	firebase.messaging().onMessage(function(payload){
+		console.log("message received", payload);
+		alert ("Your time is up!");
+	});
 }
 
 
 function startIt(){
 	//console.log(document.getElementById("min").value+" "
 		//+document.getElementById("sec").value);
-
 	//console.log ("hi this works!");
 
 	//get time input
 	var min = document.getElementById("min").value;
 	var sec = document.getElementById("sec").value; 
+
+	if (min<0 || sec<0){
+		alert("Please enter valid time");
+	}else{
 
 	//convert to ms
 	var time = (min * 60000) + (sec * 1000); 
@@ -46,6 +35,8 @@ function startIt(){
 	}).catch(function(error){
 		console.error("Error writing to FB", error);
 	});
+
+	}
 
 };
 
@@ -70,7 +61,7 @@ function requestNotificationsPermissions(){
 	firebase.messaging().requestPermission().then(function(){
 		this.saveMessagingDeviceToken();
 	}.bind(this)).catch(function(error){
-		console.error('unbale to get Permissions to notify', error);
+		console.error('unable to get Permissions to notify', error);
 	});
 	
 };
@@ -85,6 +76,7 @@ function signIn(){
 		document.getElementById("username").removeAttribute('hidden');
 		document.getElementById("signOut").removeAttribute('hidden');
 		document.getElementById("signIn").setAttribute('hidden', true);
+		document.getElementById("startIt").removeAttribute('disabled');
 
 		saveMessagingDeviceToken();
 		
@@ -101,6 +93,7 @@ function signOut (){
 		document.getElementById("username").setAttribute('hidden', true);
 		document.getElementById("signOut").setAttribute('hidden', true);
 		document.getElementById("signIn").removeAttribute('hidden');
+		document.getElementByid("startIt").setAttribute('disabled', true);
 	}).catch(function(error){
 		console.error ("user sign out unsuccessful", error);
 	});

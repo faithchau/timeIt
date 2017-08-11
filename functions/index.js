@@ -17,9 +17,7 @@ exports.countDown = functions.database.ref('/times/{timeId}').onCreate(event =>{
 	//console.log(time);
 
 	var name = snapshot.val().user; 
-
 	var token = snapshot.val().fcmtoken; 
-
 	var timer = new Stopwatch(time);
 	
 	timer.onDone(function(){
@@ -34,12 +32,9 @@ exports.countDown = functions.database.ref('/times/{timeId}').onCreate(event =>{
 
 	admin.messaging().sendToDevice(token,payload);
 
-		
 	});
 
 	timer.start();
-
-
 	//console.log ('the value is'+ event.data.val());
 
 	return snapshot.ref.child('state').set ('done');

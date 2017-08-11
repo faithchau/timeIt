@@ -5,3 +5,4 @@ importScripts('/__/firebase/init.js');
 
 firebase.messaging();
 
+
