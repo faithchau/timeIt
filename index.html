@@ -2,7 +2,7 @@
 <html lang = "en">
 <head>
 	<title>timeIt</title>
-	<link rel = "stylesheet" href = "styles/main.css">
+	<link rel = "stylesheet" href = "/styles/main.css">
 	<link rel = "stylesheet" href = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link rel = "manifest" href = "/manifest.json">
 	<script src= "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -10,22 +10,36 @@
 </head>
 <body>
 <div class = "container-fluid">
-<h1 id = "title">TimeIt!</h1>
-<h2 id= "direction"> Enter the time you wish to countdown</h2>
-<button  id = "signIn" onclick = "signIn()">SignIn!</button>
-<h3 id = "username" hidden></h3>
-<button id = "signOut" onclick = "signOut()" hidden >SignOut! </button>
+			<h1 id = "title">TimeIt!</h3>
+			<p> Created by @FaithChau</p>
+		<div id = "signedOut">
+			<h4 id = "signInDirection">Sign in to get started.</h4>
 
-<form>
-	Minutes: <br>
-	<input type = "number" name = "minutes" id ="min"><br>
-	Seconds:<br>
-	<input type = "number" name = "seconds" id= "sec"><br>
+			<button  id = "signIn" class="btn btn-primary" onclick = "signIn()">SignIn!</button>
+		</div>
 
+	
+	
+<div id = "signedIn" hidden>
+	<h3 id = "username" ></h3>
+	<h4 id= "timeDirection"> Enter the time you wish to countdown</h4>
+	<button id = "signOut" onclick = "signOut()" class="btn btn-primary">SignOut! </button>
+
+	<form id = "inputForm">
+		Minutes: <br>
+		<input type = "number" name = "minutes" id ="min"><br>
+		Seconds:<br>
+		<input type = "number" name = "seconds" id= "sec"><br>
 	</form>
-	<button id = "startIt" onclick="startIt()" disabled>StartIt!</button>
+	
+
+	
+	<button id = "startIt" class="btn btn-primary btn-lg" onclick="startIt()" disabled>StartIt!
+	</button>
+	</div>
 
 </div>
+
 
 
 <script src = "scripts/main.js"></script>
